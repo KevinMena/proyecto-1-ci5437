@@ -1,0 +1,91 @@
+# Representacion del 15 puzzle en psvn
+DOMAIN tile 16
+       b 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+
+16
+
+tile tile tile tile tile tile tile tile tile tile tile tile tile tile tile tile
+
+# Reglas
+
+# BLANCO ESQUINA SUPERIOR IZQUIERDA
+b X - - - - - - - - - - - - - - => X b - - - - - - - - - - - - - -
+b - - - X - - - - - - - - - - - => X - - - b - - - - - - - - - - -
+
+# BLANCO PRIMERA FILA SEGUNDA COLUMNA
+X b - - - - - - - - - - - - - - => b X - - - - - - - - - - - - - -
+- b X - - - - - - - - - - - - - => - X b - - - - - - - - - - - - -
+- b - - - X - - - - - - - - - - => - X - - - b - - - - - - - - - -
+
+# BLANCO PRIMERA FILA TERCERA COLUMNA
+- X b - - - - - - - - - - - - - => - b X - - - - - - - - - - - - -
+- - b X - - - - - - - - - - - - => - - X b - - - - - - - - - - - -
+- - b - - - X - - - - - - - - - => - - X - - - b - - - - - - - - -
+
+# BLANCO ESQUINA SUPERIOR DERECHA
+- - X b - - - - - - - - - - - - => - - b X - - - - - - - - - - - -
+- - - b - - - X - - - - - - - - => - - - X - - - b - - - - - - - -
+
+# BLANCO SEGUNDA FILA PRIMERA COLUMNA
+X - - - b - - - - - - - - - - - => b - - - X - - - - - - - - - - -
+- - - - b X - - - - - - - - - - => - - - - X b - - - - - - - - - -
+- - - - b - - - X - - - - - - - => - - - - X - - - b - - - - - - -
+
+# BLANCO SEGUNDA FILA SEGUNDA COLUMNA
+- X - - - b - - - - - - - - - - => - b - - - X - - - - - - - - - -
+- - - - X b - - - - - - - - - - => - - - - b X - - - - - - - - - -
+- - - - - b X - - - - - - - - - => - - - - - X b - - - - - - - - -
+- - - - - b - - - X - - - - - - => - - - - - X - - - b - - - - - -
+
+# BLANCO SEGUNDA FILA TERCERA COLUMNA
+- - X - - - b - - - - - - - - - => - - b - - - X - - - - - - - - -
+- - - - - X b - - - - - - - - - => - - - - - b X - - - - - - - - - 
+- - - - - - b X - - - - - - - - => - - - - - - X b - - - - - - - -
+- - - - - - b - - - X - - - - - => - - - - - - X - - - b - - - - -
+
+# BLANCO SEGUNDA FILA CUARTA COLUMNA
+- - - X - - - b - - - - - - - - => - - - b - - - X - - - - - - - -
+- - - - - - X b - - - - - - - - => - - - - - - b X - - - - - - - -
+- - - - - - - b - - - X - - - - => - - - - - - - X - - - b - - - -
+
+# BLANCO TERCERA FILA PRIMERA COLUMNA
+- - - - X - - - b - - - - - - - => - - - - b - - - X - - - - - - -
+- - - - - - - - b X - - - - - - => - - - - - - - - X b - - - - - -
+- - - - - - - - b - - - X - - - => - - - - - - - - X - - - b - - -
+
+# BLANCO TERCERA FILA SEGUNDA COLUMNA
+- - - - - X - - - b - - - - - - => - - - - - b - - - X - - - - - -
+- - - - - - - - X b - - - - - - => - - - - - - - - b X - - - - - -
+- - - - - - - - - b X - - - - - => - - - - - - - - - X b - - - - -
+- - - - - - - - - b - - - X - - => - - - - - - - - - X - - - b - -
+
+# BLANCO TERCERA FILA TERCERA COLUMNA
+- - - - - - X - - - b - - - - - => - - - - - - b - - - X - - - - -
+- - - - - - - - - X b - - - - - => - - - - - - - - - b X - - - - -
+- - - - - - - - - - b X - - - - => - - - - - - - - - - X b - - - -
+- - - - - - - - - - b - - - X - => - - - - - - - - - - X - - - b -
+
+# BLANCO TERCERA FILA CUARTA COLUMNA
+- - - - - - - X - - - b - - - - => - - - - - - - b - - - X - - - -
+- - - - - - - - - - X b - - - - => - - - - - - - - - - b X - - - -
+- - - - - - - - - - - b - - - X => - - - - - - - - - - - X - - - b
+
+# BLANCO CUARTA FILA PRIMERA COLUMNA
+- - - - - - - - X - - - b - - - => - - - - - - - - b - - - X - - -
+- - - - - - - - - - - - b X - - => - - - - - - - - - - - - X b - -
+
+# BLANCO CUARTA FILA SEGUNDA COLUMNA
+- - - - - - - - - X - - - b - - => - - - - - - - - - b - - - X - -
+- - - - - - - - - - - - X b - - => - - - - - - - - - - - - b X - -
+- - - - - - - - - - - - - b X - => - - - - - - - - - - - - - X b -
+
+# BLANCO CUARTA FILA TERCERA COLUMNA
+- - - - - - - - - - X - - - b - => - - - - - - - - - - b - - - X -
+- - - - - - - - - - - - - X b - => - - - - - - - - - - - - - b X -
+- - - - - - - - - - - - - - b X => - - - - - - - - - - - - - - X b
+
+# BLANCO CUARTA FILA CUARTA COLUMNA
+- - - - - - - - - - - X - - - b => - - - - - - - - - - - b - - - X
+- - - - - - - - - - - - - - X b => - - - - - - - - - - - - - - b X
+
+GOAL 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 b
