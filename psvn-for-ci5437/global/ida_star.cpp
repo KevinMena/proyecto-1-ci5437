@@ -4,38 +4,18 @@
 #include <chrono>
 #include <iostream>
 #include <fstream>
+#include "heuristic.hpp"
 using namespace std;
 using namespace std::chrono;
 
 #define  MAX_LINE_LENGTH 999 
 
-state_t state, goal;
+state_t state;
 vector<char*> path;
 
-int manhattan_distance(state_t state, state_t goal, const int max_size)
+pair<bool, int> f_bounded_visit(int bound, int g_value, Heuristic* heuristic)
 {
-    int current_state[max_size];
-    int goal_state[max_size];
-    int mhd = 0;
-    for( int i = 0; i < max_size; i++ ) {
-        current_state[state.vars[ i ]] = i;
-        goal_state[goal.vars[ i ]] = i;
-    }
-
-    int half_size = max_size / 4;
-
-    for( int i = 1; i < max_size; i++ ) {
-        int first_half = abs((current_state[i] / half_size) - (goal_state[i] / half_size));
-        int second_half = abs((current_state[i] % half_size) - (goal_state[i] % half_size));
-        mhd += first_half + second_half;
-    }
-
-    return mhd;
-}
-
-pair<bool, int> f_bounded_visit(int bound, int g_value)
-{
-    int h = manhattan_distance(state, goal, 16);
+    int h = heuristic->value(state);
     int f_value = g_value + h;
 
     if (f_value > bound) return make_pair(false, f_value);
@@ -52,12 +32,12 @@ pair<bool, int> f_bounded_visit(int bound, int g_value)
         apply_fwd_rule(ruleid, &state_copy, &state);
         const int cost = g_value + get_fwd_rule_cost(ruleid);
 
-        if(manhattan_distance(state, goal, 16) < INT32_MAX)
+        if(heuristic->value(state) < INT32_MAX)
         {
             char str[MAX_LINE_LENGTH + 1];
             sprint_state(str, MAX_LINE_LENGTH + 1, &state);
             path.push_back(str);
-            pair<bool, int> pair_value = f_bounded_visit(bound, cost);
+            pair<bool, int> pair_value = f_bounded_visit(bound, cost, heuristic);
 
             if(pair_value.first) return pair_value;
             t = std::min(t, pair_value.second);
@@ -66,6 +46,21 @@ pair<bool, int> f_bounded_visit(int bound, int g_value)
     }
 
     return make_pair(false, t);
+}
+
+int ida_star(Heuristic* heuristic)
+{
+    int bound = heuristic->value(state);
+
+    while (true)
+    {
+        pair<bool, int> pair_value = f_bounded_visit(bound, 0, heuristic);
+
+        if(pair_value.first) return 1;
+        bound = pair_value.second;
+    }
+
+    return -1;
 }
 
 int main(int argc, char **argv) 
@@ -90,18 +85,22 @@ int main(int argc, char **argv)
     print_state(stdout, &state);
     printf("\n");
 
+    int heuristic_choice;
+    cout << "Which heuristic to use:" << endl;
+    cout << "1. Manhattan Distance:" << endl;
+    cout << "2. APDB" << endl;
+    cin >> heuristic_choice;
+
     auto start = high_resolution_clock::now();
 
-    read_state("1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 B", &goal);
-    int bound = manhattan_distance(state, goal, 16);
-
-    while (true)
+    switch (heuristic_choice)
     {
-        pair<bool, int> pair_value = f_bounded_visit(bound, 0);
-
-        if(pair_value.first) break;
-        bound = pair_value.second;
-    } 
+    case 1:
+        ManhattanHeuristic heuristic;
+        heuristic.load_pdb();
+        ida_star(&heuristic);
+        break;
+    }
 
     auto stop = high_resolution_clock::now();
 

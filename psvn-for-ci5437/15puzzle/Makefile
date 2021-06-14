@@ -23,15 +23,15 @@ psvn2c_abstraction.c:
 	rm -f $*.c
 
 %.a_star: %.c ../global/a_star.cpp
-	$(CXX) $(OPT) ../global/a_star.cpp -include $< -o $@
+	$(CXX) $(OPT) ../global/a_star.cpp -include $< -include ../global/heuristic.hpp ../global/heuristic.cpp -o $@
 	rm -f $*.c
 
 %.a_star_ddd: %.c ../global/a_star_ddd.cpp
-	$(CXX) $(OPT) ../global/a_star_ddd.cpp -include $< -o $@
+	$(CXX) $(OPT) ../global/a_star_ddd.cpp -include $< -include ../global/heuristic.hpp ../global/heuristic.cpp -o $@
 	rm -f $*.c
 
 %.ida_star: %.c ../global/ida_star.cpp
-	$(CXX) $(OPT) ../global/ida_star.cpp -include $< -o $@
+	$(CXX) $(OPT) ../global/ida_star.cpp -include $< -include ../global/heuristic.hpp ../global/heuristic.cpp -o $@
 	rm -f $*.c
 
 .PHONY: clean
