@@ -59,8 +59,6 @@ int ida_star(Heuristic* heuristic)
         if(pair_value.first) return 1;
         bound = pair_value.second;
     }
-
-    return -1;
 }
 
 int main(int argc, char **argv) 
@@ -85,6 +83,7 @@ int main(int argc, char **argv)
     print_state(stdout, &state);
     printf("\n");
 
+    //Heuristic* heuristic;
     int heuristic_choice;
     cout << "Which heuristic to use:" << endl;
     cout << "1. Manhattan Distance:" << endl;
@@ -95,11 +94,20 @@ int main(int argc, char **argv)
 
     switch (heuristic_choice)
     {
-    case 1:
-        ManhattanHeuristic heuristic;
-        heuristic.load_pdb();
-        ida_star(&heuristic);
-        break;
+        case 1:
+        {
+            ManhattanHeuristic heuristic;
+            heuristic.load_pdb();
+            ida_star(&heuristic);
+        }
+            break;
+        case 2:
+        {
+            Puzzle15PDBHeuristic heuristic;
+            heuristic.load_pdb();
+            ida_star(&heuristic);
+        }
+            break;
     }
 
     auto stop = high_resolution_clock::now();

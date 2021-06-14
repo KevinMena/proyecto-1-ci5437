@@ -1,6 +1,8 @@
 #ifndef _HEURISTIC_HPP
 #define _HEURISTIC_HPP
 
+#include <iostream>
+
 class Heuristic
 {
 public:
@@ -17,10 +19,22 @@ public:
     int value(state_t state);
 };
 
-// class PDBHeuristic : public Heuristic
-// {
-//     void load_pdb();
-//     int heuristic(state_t state);
-// };
+class Puzzle15PDBHeuristic : public Heuristic
+{
+public:
+    int sum;
+    void load_pdb();
+    int value(state_t state);
+private:
+    state_map_t *map1;
+    state_map_t *map2;
+    state_map_t *map3;
+    abstraction_t *abs1;
+    abstraction_t *abs2;
+    abstraction_t *abs3;
+    state_t abs_state1;
+    state_t abs_state2;
+    state_t abs_state3;
+};
 
 #endif
