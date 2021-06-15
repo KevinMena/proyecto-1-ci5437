@@ -6,6 +6,8 @@
 class Heuristic
 {
 public:
+    Heuristic() { };
+    virtual ~Heuristic() = 0;
     virtual void load_pdb() = 0;
     virtual int value(state_t state) = 0;
 };
@@ -13,8 +15,10 @@ public:
 class ManhattanHeuristic : public Heuristic
 {
 public:
+    ManhattanHeuristic() { };
+    ~ManhattanHeuristic();
+    
     int mtable[16][16];
-
     void load_pdb();
     int value(state_t state);
 };
@@ -22,6 +26,9 @@ public:
 class Puzzle15PDBHeuristic : public Heuristic
 {
 public:
+    Puzzle15PDBHeuristic() { };
+    ~Puzzle15PDBHeuristic();
+    
     int sum;
     void load_pdb();
     int value(state_t state);

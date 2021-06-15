@@ -1,5 +1,8 @@
 #include "heuristic.hpp"
 
+Heuristic::~Heuristic() {}
+ManhattanHeuristic::~ManhattanHeuristic() {}
+
 void ManhattanHeuristic::load_pdb()
 {
     unsigned tmp_table[16][16]={{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -51,6 +54,16 @@ int ManhattanHeuristic::value(state_t state)
 	}
 
     return mhd;
+}
+
+Puzzle15PDBHeuristic::~Puzzle15PDBHeuristic()
+{
+    destroy_state_map(map1);
+    destroy_state_map(map2);
+    destroy_state_map(map3);
+    destroy_abstraction(abs1);
+    destroy_abstraction(abs2);
+    destroy_abstraction(abs3);
 }
 
 void Puzzle15PDBHeuristic::load_pdb()

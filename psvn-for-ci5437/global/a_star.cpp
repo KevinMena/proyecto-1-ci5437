@@ -2,13 +2,13 @@
 #include <chrono>
 #include <iostream>
 #include <fstream>
-#include "heuristic.hpp"
+#include <vector>
 using namespace std;
 using namespace std::chrono;
 
 #define  MAX_LINE_LENGTH 999
 
-int a_star(state_t start, state_t goal, Heuristic* heuristic)
+int a_star(state_t start, Heuristic* heuristic)
 {
     state_t state, child;
     int g, ruleid;
@@ -20,7 +20,6 @@ int a_star(state_t start, state_t goal, Heuristic* heuristic)
     state_map_add(cost_so_far, &start, 0); // Add to the map the first state
     open.Add(0, 0, start); // Add to the priority queue the first state
 
-    g = 0;
     while( !open.Empty() ) 
     {
         g = open.CurrentPriority();
@@ -29,27 +28,33 @@ int a_star(state_t start, state_t goal, Heuristic* heuristic)
         state = open.Top();
         open.Pop();
 
-        // print the distance then the state
-        printf("%d  ",g);
-        print_state(stdout,&state);
-        printf(" \n");
-
-        if (is_goal(&state)) break;
-
-        // look at all predecessors of the state
-        init_fwd_iter(&iter, &state);
-        while( (ruleid = next_ruleid(&iter) ) >= 0 ) 
+        const int *old_cost = state_map_get(cost_so_far, &state);
+        if( (old_cost == NULL) ||  (g < *old_cost) || (!compare_states(&state, &start)) )
         {
-            apply_fwd_rule(ruleid, &state, &child);
-            const int new_cost = (*state_map_get(cost_so_far, &state)) + get_fwd_rule_cost(ruleid);
+            state_map_add(cost_so_far, &state, g);
 
-            const int *old_cost = state_map_get(cost_so_far, &child);
-            if( (old_cost == NULL) || (new_cost < *old_cost) )
+            if (is_goal(&state)) 
             {
-                state_map_add(cost_so_far, &child, new_cost);
+                destroy_state_map(cost_so_far);
+                open.Clear();
+                return g;
+            }
+
+            // look at all predecessors of the state
+            init_fwd_iter(&iter, &state);
+            while( (ruleid = next_ruleid(&iter) ) >= 0 ) 
+            {
+                apply_fwd_rule(ruleid, &state, &child);
+                const int new_cost = g + get_fwd_rule_cost(ruleid);
+
                 int h = heuristic->value(child);
+
                 int priority = new_cost + h;
-                open.Add(priority, new_cost, child);
+
+                if (h < INT32_MAX)
+                {
+                    open.Add(priority, new_cost, child);
+                }
             }
         }
     }
@@ -59,51 +64,68 @@ int a_star(state_t start, state_t goal, Heuristic* heuristic)
 
 int main(int argc, char **argv) 
 {
+    if(argc < 3)
+    {
+        cout << "Missing arguments. Run with ./<domain>.ida_star <input_file> <output_file>";
+    }
+
     char str[MAX_LINE_LENGTH + 1];
     ssize_t nchars; 
-    state_t initial, goal;
+    state_t state;
+
+    Heuristic* heuristic = load_heuristic();
+    heuristic->load_pdb();
 
     // Read first state of the examples txt to test
-    ifstream current_file;
-    current_file.open("../benchmarks/15puzzle/test.txt");
-    current_file.getline(str, MAX_LINE_LENGTH + 1);
-    current_file.close();
+    ifstream input_file;
+    ofstream output_file;
 
-    // CONVERT THE STRING TO A STATE
-    nchars = read_state(str, &initial);
-    if( nchars <= 0 ) {
-        printf("Error: invalid state entered.\n");
-        return 0; 
-    }
+    input_file.open(argv[1]);
 
-    printf("The state you entered is: ");
-    print_state(stdout, &initial);
-    printf("\n");
+    output_file.open(argv[2]);
+    output_file << "Instance    Solved    Time    Nodes-Expanded    Distance\n";
+    output_file << "-----------------------------------------------------------------------------\n";
 
-    read_state("1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 B", &goal);
-
-    int heuristic_choice;
-    cout << "Which heuristic to use:" << endl;
-    cout << "1. Manhattan Distance:" << endl;
-    cout << "2. APDB" << endl;
-    cin >> heuristic_choice;
-
-    auto start = high_resolution_clock::now();
-
-    switch (heuristic_choice)
+    while(input_file.peek() != EOF)
     {
-    case 1:
-        ManhattanHeuristic heuristic;
-        heuristic.load_pdb();
-        a_star(initial, goal, &heuristic);
-        break;
+        input_file.getline(str, MAX_LINE_LENGTH + 1);
+        
+        // CONVERT THE STRING TO A STATE
+        nchars = read_state(str, &state);
+        if( nchars <= 0 ) {
+            printf("Error: invalid state entered.\n");
+            continue;
+        }
+
+        printf("Solving state: ");
+        print_state(stdout, &state);
+        printf("\n");
+
+        auto start = high_resolution_clock::now();
+
+        int goal = a_star(state, heuristic);
+
+        auto stop = high_resolution_clock::now();
+
+        auto duration = duration_cast<microseconds>(stop - start);
+
+        if(goal != -1)
+        {
+            output_file << str << "    True    " << duration.count() << "    " << 0 << "    " << goal << endl;
+        }
+        else
+        {
+            output_file << str << "    False    NA    NA    NA" << endl;
+        }
+
+        input_file.clear();
     }
 
-    auto stop = high_resolution_clock::now();
+    input_file.close();
+    output_file.close();
 
-    auto duration = duration_cast<microseconds>(stop - start);
-  
-    cout << "Time taken by function: "
-         << duration.count() << " microseconds" << endl;     
+    delete heuristic;
+    
     return 0;
 }
+

@@ -2,7 +2,6 @@
 #include <chrono>
 #include <iostream>
 #include <fstream>
-#include <vector>
 #include "heuristic.hpp"
 using namespace std;
 using namespace std::chrono;
@@ -21,6 +20,7 @@ int a_star(state_t start, state_t goal, Heuristic* heuristic)
     state_map_add(cost_so_far, &start, 0); // Add to the map the first state
     open.Add(0, 0, start); // Add to the priority queue the first state
 
+    g = 0;
     while( !open.Empty() ) 
     {
         g = open.CurrentPriority();
@@ -34,28 +34,22 @@ int a_star(state_t start, state_t goal, Heuristic* heuristic)
         print_state(stdout,&state);
         printf(" \n");
 
-        const int *old_cost = state_map_get(cost_so_far, &state);
-        if( (old_cost == NULL) ||  (g < *old_cost) || (!compare_states(&state, &start)) )
+        if (is_goal(&state)) break;
+
+        // look at all predecessors of the state
+        init_fwd_iter(&iter, &state);
+        while( (ruleid = next_ruleid(&iter) ) >= 0 ) 
         {
-            state_map_add(cost_so_far, &state, g);
+            apply_fwd_rule(ruleid, &state, &child);
+            const int new_cost = (*state_map_get(cost_so_far, &state)) + get_fwd_rule_cost(ruleid);
 
-            if (is_goal(&state)) return 1;
-
-            // look at all predecessors of the state
-            init_fwd_iter(&iter, &state);
-            while( (ruleid = next_ruleid(&iter) ) >= 0 ) 
+            const int *old_cost = state_map_get(cost_so_far, &child);
+            if( (old_cost == NULL) || (new_cost < *old_cost) )
             {
-                apply_fwd_rule(ruleid, &state, &child);
-                const int new_cost = g + get_fwd_rule_cost(ruleid);
-
+                state_map_add(cost_so_far, &child, new_cost);
                 int h = heuristic->value(child);
-
                 int priority = new_cost + h;
-
-                if (h < INT32_MAX)
-                {
-                    open.Add(priority, new_cost, child);
-                }
+                open.Add(priority, new_cost, child);
             }
         }
     }
@@ -86,14 +80,14 @@ int main(int argc, char **argv)
     print_state(stdout, &initial);
     printf("\n");
 
+    read_state("1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 B", &goal);
+
     int heuristic_choice;
     cout << "Which heuristic to use:" << endl;
     cout << "1. Manhattan Distance:" << endl;
     cout << "2. APDB" << endl;
     cin >> heuristic_choice;
 
-    read_state("1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 B", &goal);
-    
     auto start = high_resolution_clock::now();
 
     switch (heuristic_choice)
@@ -110,7 +104,6 @@ int main(int argc, char **argv)
     auto duration = duration_cast<microseconds>(stop - start);
   
     cout << "Time taken by function: "
-         << duration.count() << " microseconds" << endl;   
+         << duration.count() << " microseconds" << endl;     
     return 0;
 }
-
