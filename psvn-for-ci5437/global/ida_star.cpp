@@ -8,9 +8,9 @@ using namespace std::chrono;
 
 #define  MAX_LINE_LENGTH 999 
 
-state_t state;
+int64_t nodes;
 
-pair<bool, int> f_bounded_visit(int bound, int g_value, Heuristic* heuristic, const int history)
+pair<bool, int> f_bounded_visit(int bound, int g_value, state_t state, Heuristic* heuristic, const int history)
 {
     int h = heuristic->value(state);
     int f_value = g_value + h;
@@ -18,19 +18,20 @@ pair<bool, int> f_bounded_visit(int bound, int g_value, Heuristic* heuristic, co
     if (f_value > bound) return make_pair(false, f_value);
     if (h == 0) return make_pair(true, g_value);
 
+    nodes++;
+
     int t = INT32_MAX;
     int child_history = 0;
     int ruleid;
     ruleid_iterator_t iter;
-    state_t state_copy;
-    copy_state(&state_copy, &state);
-    init_fwd_iter(&iter, &state_copy);
+    state_t child;
+
+    init_fwd_iter(&iter, &state);
     while( (ruleid = next_ruleid(&iter) ) >= 0 ) 
     {
-        apply_fwd_rule(ruleid, &state_copy, &state);
+        if( !fwd_rule_valid_for_history(history, ruleid) ) continue;
 
-        if( !fwd_rule_valid_for_history(history, ruleid) )
-            continue;
+        apply_fwd_rule(ruleid, &state, &child);
         
         child_history = next_fwd_history(history, ruleid);
 
@@ -38,7 +39,7 @@ pair<bool, int> f_bounded_visit(int bound, int g_value, Heuristic* heuristic, co
 
         if(heuristic->value(state) < INT32_MAX)
         {
-            pair<bool, int> pair_value = f_bounded_visit(bound, cost, heuristic, child_history);
+            pair<bool, int> pair_value = f_bounded_visit(bound, cost, child, heuristic, child_history);
 
             if(pair_value.first) return pair_value;
             t = std::min(t, pair_value.second);
@@ -48,13 +49,13 @@ pair<bool, int> f_bounded_visit(int bound, int g_value, Heuristic* heuristic, co
     return make_pair(false, t);
 }
 
-int ida_star(Heuristic* heuristic)
+int ida_star(state_t state, Heuristic* heuristic)
 {
     int bound = heuristic->value(state);
 
     while (true)
     {
-        pair<bool, int> pair_value = f_bounded_visit(bound, 0, heuristic, init_history);
+        pair<bool, int> pair_value = f_bounded_visit(bound, 0, state, heuristic, init_history);
 
         if(pair_value.first) return pair_value.second;
         bound = pair_value.second;
@@ -71,6 +72,7 @@ int main(int argc, char **argv)
     }
 
     char str[MAX_LINE_LENGTH + 1];
+    state_t state;
     ssize_t nchars;
 
     Heuristic* heuristic = load_heuristic();
@@ -101,9 +103,10 @@ int main(int argc, char **argv)
         print_state(stdout, &state);
         printf("\n");
 
+        nodes = 0;
         auto start = high_resolution_clock::now();
 
-        int goal = ida_star(heuristic);
+        int goal = ida_star(state, heuristic);
 
         auto stop = high_resolution_clock::now();
 
@@ -111,7 +114,7 @@ int main(int argc, char **argv)
 
         if(goal != -1)
         {
-            output_file << str << "    True    " << duration.count() << "    " << 0 << "    " << goal << endl;
+            output_file << str << "    True    " << duration.count() << "    " << nodes << "    " << goal << endl;
         }
         else
         {

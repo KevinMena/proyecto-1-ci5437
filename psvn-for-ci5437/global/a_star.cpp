@@ -8,6 +8,8 @@ using namespace std::chrono;
 
 #define  MAX_LINE_LENGTH 999
 
+int64_t nodes;
+
 int a_star(state_t start, Heuristic* heuristic)
 {
     state_t state, child;
@@ -18,7 +20,7 @@ int a_star(state_t start, Heuristic* heuristic)
     state_map_t *cost_so_far = new_state_map(); // contains the cost-to-goal for all states that have been generated
 
     state_map_add(cost_so_far, &start, 0); // Add to the map the first state
-    open.Add(0, 0, start); // Add to the priority queue the first state
+    open.Add(heuristic->value(start), 0, start); // Add to the priority queue the first state
 
     while( !open.Empty() ) 
     {
@@ -28,7 +30,9 @@ int a_star(state_t start, Heuristic* heuristic)
         state = open.Top();
         open.Pop();
 
-        const int *old_cost = state_map_get(cost_so_far, &state);
+        int *old_cost = state_map_get(cost_so_far, &state);
+        nodes++;
+        
         if( (old_cost == NULL) ||  (g < *old_cost) || (!compare_states(&state, &start)) )
         {
             state_map_add(cost_so_far, &state, g);
@@ -101,6 +105,8 @@ int main(int argc, char **argv)
         print_state(stdout, &state);
         printf("\n");
 
+        nodes = 0;
+
         auto start = high_resolution_clock::now();
 
         int goal = a_star(state, heuristic);
@@ -111,7 +117,7 @@ int main(int argc, char **argv)
 
         if(goal != -1)
         {
-            output_file << str << "    True    " << duration.count() << "    " << 0 << "    " << goal << endl;
+            output_file << str << "    True    " << duration.count() << "    " << nodes << "    " << goal << endl;
         }
         else
         {
