@@ -37,7 +37,7 @@ pair<bool, int> f_bounded_visit(int bound, int g_value, state_t state, Heuristic
 
         const int cost = g_value + get_fwd_rule_cost(ruleid);
 
-        if(heuristic->value(state) < INT32_MAX)
+        if(h < INT32_MAX)
         {
             pair<bool, int> pair_value = f_bounded_visit(bound, cost, child, heuristic, child_history);
 

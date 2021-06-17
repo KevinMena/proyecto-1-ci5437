@@ -14,11 +14,11 @@ map tile 12 b
 map tile 13 b
 map tile 14 b
 map tile 15 b
-map tile 16 16
-map tile 17 17
-map tile 18 18
+map tile 16 b
+map tile 17 b
+map tile 18 b
 map tile 19 19
-map tile 20 b
+map tile 20 20
 map tile 21 21
 map tile 22 22
 map tile 23 23

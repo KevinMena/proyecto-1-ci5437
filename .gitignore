@@ -53,3 +53,7 @@
 .ionide
 
 .DS_Store
+
+## PSVN/PROJECT
+*.a_star
+*.ida_star

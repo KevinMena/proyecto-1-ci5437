@@ -32,73 +32,8 @@ void ManhattanHeuristic::load_pdb()
 
 int ManhattanHeuristic::value(state_t state)
 {
-        // int current_state[max_size];
-    // int goal_state[max_size];
-    // int mhd = 0;
-    // for( int i = 0; i < max_size; i++ ) {
-    //     current_state[state.vars[ i ]] = i;
-    //     goal_state[goal.vars[ i ]] = i;
-    // }
-
-    // int half_size = max_size / 4;
-
-    // for( int i = 1; i < max_size; i++ ) {
-    //     int first_half = abs((current_state[i] / half_size) - (goal_state[i] / half_size));
-    //     int second_half = abs((current_state[i] % half_size) - (goal_state[i] % half_size));
-    //     mhd += first_half + second_half;
-    // }
-
     int mhd=0;
 	for (int i=0; i<16; i++){
-		mhd += mtable[state.vars[i]][i];
-	}
-
-    return mhd;
-}
-
-ManhattanHeuristic24puzzle::~ManhattanHeuristic24puzzle() {}
-
-void ManhattanHeuristic24puzzle::load_pdb()
-{
-    unsigned tmp_table[25][25]={{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-                                {0,1,2,3,4,1,2,3,4,5,2,3,4,5,6,3,4,5,6,7,4,5,6,7,8},
-                                {1,0,1,2,3,2,1,2,3,4,3,2,3,4,5,4,3,4,5,6,5,4,5,6,7},
-                                {2,1,0,1,2,3,2,1,2,3,4,3,2,3,4,5,4,3,4,5,6,5,4,5,6},
-                                {3,2,1,0,1,4,3,2,1,2,5,4,3,2,3,6,5,4,3,4,7,6,5,4,5},
-                                {4,3,2,1,0,5,4,3,2,1,6,5,4,3,2,7,6,5,4,3,8,7,6,5,4},
-                                {1,2,3,4,5,0,1,2,3,4,1,2,3,4,5,2,3,4,5,6,3,4,5,6,7},
-                                {2,1,2,3,4,1,0,1,2,3,2,1,2,3,4,3,2,3,4,5,4,3,4,5,6},
-                                {3,2,1,2,3,2,1,0,1,2,3,2,1,2,3,4,3,2,3,4,5,4,3,4,5},
-                                {4,3,2,1,2,3,2,1,0,1,4,3,2,1,2,5,4,3,2,3,6,5,4,3,4},
-                                {5,4,3,2,1,4,3,2,1,0,5,4,3,2,1,6,5,4,3,2,7,6,5,4,3},
-                                {2,3,4,5,6,1,2,3,4,5,0,1,2,3,4,1,2,3,4,5,2,3,4,5,6},
-                                {3,2,3,4,5,2,1,2,3,4,1,0,1,2,3,2,1,2,3,4,3,2,3,4,5},
-                                {4,3,2,3,4,3,2,1,2,3,2,1,0,1,2,3,2,1,2,3,4,3,2,3,4},
-                                {5,4,3,2,3,4,3,2,1,2,3,2,1,0,1,4,3,2,1,2,5,4,3,2,3},
-                                {6,5,4,3,2,5,4,3,2,1,4,3,2,1,0,5,4,3,2,1,6,5,4,3,2},
-                                {3,4,5,6,7,2,3,4,5,6,1,2,3,4,5,0,1,2,3,4,1,2,3,4,5},
-                                {4,3,4,5,6,3,2,3,4,5,2,1,2,3,4,1,0,1,2,3,2,1,2,3,4},
-                                {5,4,3,4,5,4,3,2,3,4,3,2,1,2,3,2,1,0,1,2,3,2,1,1,2},
-                                {6,5,4,3,4,5,4,3,2,3,4,3,2,1,2,3,2,1,0,1,4,3,2,1,2},
-                                {7,6,5,4,3,6,5,4,3,2,5,4,3,2,1,4,3,2,1,0,5,4,3,2,1},
-                                {4,5,6,7,8,3,4,5,6,7,2,3,4,5,6,1,2,3,4,5,0,1,2,3,4},
-                                {5,4,5,6,7,4,3,4,5,6,3,2,3,4,5,2,1,2,3,4,1,0,1,2,3},
-                                {6,5,4,5,6,5,4,3,4,5,4,3,2,3,4,3,2,1,2,3,2,1,0,1,2},
-                                {7,6,5,4,5,6,5,4,3,4,5,4,3,2,3,4,3,2,1,2,3,2,1,0,1},
-                            };
-
-	for (int i=0; i<25; i++) {
-		for (int j=0; j<25; j++) {
-			mtable[i][j] = tmp_table[i][j];
-		}
-	}
-};
-
-int ManhattanHeuristic24puzzle::value(state_t state)
-{
-
-    int mhd=0;
-	for (int i=0; i<25; i++){
 		mhd += mtable[state.vars[i]][i];
 	}
 
@@ -151,9 +86,11 @@ Puzzle24PDBHeuristic::~Puzzle24PDBHeuristic()
     destroy_state_map(map1);
     destroy_state_map(map2);
     destroy_state_map(map3);
+    destroy_state_map(map4);
     destroy_abstraction(abs1);
     destroy_abstraction(abs2);
     destroy_abstraction(abs3);
+    destroy_abstraction(abs4);
 }
 
 void Puzzle24PDBHeuristic::load_pdb()
@@ -161,6 +98,7 @@ void Puzzle24PDBHeuristic::load_pdb()
     FILE *f1 = fopen("abst_1.pdb","r");
 	FILE *f2 = fopen("abst_2.pdb","r");
 	FILE *f3 = fopen("abst_3.pdb","r");
+	FILE *f4 = fopen("abst_4.pdb","r");
 
 	abs1 = read_abstraction_from_file("abst_1.abst");
 	map1 = read_state_map(f1);
@@ -171,9 +109,13 @@ void Puzzle24PDBHeuristic::load_pdb()
 	abs3 = read_abstraction_from_file("abst_3.abst");
 	map3 = read_state_map(f3);
 
+	abs4 = read_abstraction_from_file("abst_4.abst");
+	map4 = read_state_map(f4);
+
 	fclose(f1);
 	fclose(f2);
 	fclose(f3);	
+	fclose(f4);	
 }
 
 int Puzzle24PDBHeuristic::value(state_t state)
@@ -181,8 +123,9 @@ int Puzzle24PDBHeuristic::value(state_t state)
     abstract_state(abs1, &state, &abs_state1);
 	abstract_state(abs2, &state, &abs_state2);
 	abstract_state(abs3, &state, &abs_state3);
+    abstract_state(abs4, &state, &abs_state4);
 
-	sum = *state_map_get(map1, &abs_state1) + *state_map_get(map2, &abs_state2) + *state_map_get(map3, &abs_state3);
+	sum = *state_map_get(map1, &abs_state1) + *state_map_get(map2, &abs_state2) + *state_map_get(map3, &abs_state3) + *state_map_get(map4, &abs_state4);
 
 	return (sum);
 }

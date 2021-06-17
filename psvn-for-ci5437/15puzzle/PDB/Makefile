@@ -1,7 +1,7 @@
 CC = gcc
 CXX = g++
 OPT = -Wall -O3 -Wno-unused-function -Wno-unused-variable
-PSVNOPT = --state_map --backwards_moves --fwd_history_len=2
+PSVNOPT = --state_map --backwards_moves --fwd_history_len=2 --bwd_history_len=0
 
 psvn2c_core.c:
 	cp ../../src/psvn2c_core.c ./psvn2c_core.c
