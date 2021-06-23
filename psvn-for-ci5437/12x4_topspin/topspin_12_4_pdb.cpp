@@ -1,4 +1,4 @@
-#include "../../global/heuristic.cpp"
+#include "../global/heuristic.cpp"
 
 Heuristic* load_heuristic()
 {
