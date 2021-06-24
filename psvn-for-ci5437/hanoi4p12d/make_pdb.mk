@@ -1,7 +1,7 @@
 CC = gcc
 CXX = g++
 OPT = -Wall -O3 -Wno-unused-function -Wno-unused-variable
-PSVNOPT = --state_map --backwards_moves --fwd_history_len=2 --bwd_history_len=0
+PSVNOPT = --state_map --backward_moves --fwd_history_len=0 --bwd_history_len=0
 
 psvn2c_core.c:
 	cp ../src/psvn2c_core.c ./psvn2c_core.c
@@ -31,7 +31,7 @@ abstractor:
 	@rm -f `basename $*`.abst `basename $*`.pdb `basename $*`.psvn
 	@echo "**** Running abstractor on `dirname $*`.psvn with `basename $*`.txt ..."
 	@./abstractor `dirname $*`.psvn `basename $*` < `basename $*`.txt > /dev/null
-	@make `basename $*`.distSummary
+	@make -f make_pdb.mk `basename $*`.distSummary
 	@echo "**** Constructing PDB `basename $*`.pdb ..."
 	@./`basename $*`.distSummary `basename $*`.pdb
 	@rm -f abstractor `basename $*`.distSummary
