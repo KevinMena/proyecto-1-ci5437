@@ -179,3 +179,36 @@ int MaxHeuristic::value(state_t state)
 
 	return (sum);
 }
+
+MaxHeuristicTwo::~MaxHeuristicTwo()
+{
+    destroy_state_map(map1);
+    destroy_state_map(map2);
+    destroy_abstraction(abs1);
+    destroy_abstraction(abs2);
+}
+
+void MaxHeuristicTwo::load_pdb()
+{
+    FILE *f1 = fopen("abst_1.pdb","r");
+	FILE *f2 = fopen("abst_2.pdb","r");
+
+	abs1 = read_abstraction_from_file("abst_1.abst");
+	map1 = read_state_map(f1);
+
+	abs2 = read_abstraction_from_file("abst_2.abst");
+	map2 = read_state_map(f2);
+
+	fclose(f1);
+	fclose(f2);
+}
+
+int MaxHeuristicTwo::value(state_t state)
+{
+    abstract_state(abs1, &state, &abs_state1);
+	abstract_state(abs2, &state, &abs_state2);
+
+	sum = std::max(*state_map_get(map1, &abs_state1), *state_map_get(map2, &abs_state2));
+
+	return (sum);
+}

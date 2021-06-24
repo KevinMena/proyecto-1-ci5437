@@ -91,4 +91,22 @@ private:
     state_t abs_state2;
     state_t abs_state3;
 };
+
+class MaxHeuristicTwo : public Heuristic
+{
+public:
+    MaxHeuristicTwo() { };
+    ~MaxHeuristicTwo();
+    
+    int sum;
+    void load_pdb();
+    int value(state_t state);
+private:
+    state_map_t *map1;
+    state_map_t *map2;
+    abstraction_t *abs1;
+    abstraction_t *abs2;
+    state_t abs_state1;
+    state_t abs_state2;
+};
 #endif

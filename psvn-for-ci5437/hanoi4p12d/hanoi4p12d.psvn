@@ -1,8 +1,10 @@
+# This file was created by genHanoi.cpp with the following command line parameters:
+#  4  12
 
 # number of state variables
 48
 
-# All state variables are binary
+# All state variables are binary.
 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 
 
 1 0 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  => 0 1 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - LABEL Disk1_From1_To2

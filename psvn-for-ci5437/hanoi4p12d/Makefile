@@ -1,7 +1,7 @@
 CC = gcc
 CXX = g++
 OPT = -Wall -O3 -Wno-unused-function -Wno-unused-variable
-PSVNOPT = --state_map --backwards_moves --fwd_history_len=2 --bwd_history_len=0
+PSVNOPT = --state_map --no_backwards_moves --fwd_history_len=2
 
 psvn2c_core.c:
 	cp ../src/psvn2c_core.c ./psvn2c_core.c
@@ -37,13 +37,12 @@ abstractor:
 	@rm -f abstractor `basename $*`.distSummary
 	
 %.a_star: %.c ../global/a_star.cpp
-	$(CXX) $(OPT) ../global/a_star.cpp -include $< -include 15puzzle_apdb.cpp -o $@
+	$(CXX) $(OPT) ../global/a_star.cpp -include $< -include hanoi_12_pdb.cpp -o $@
 	rm -f $*.c
 
 %.ida_star: %.c ../global/ida_star.cpp
-	$(CXX) $(OPT) ../global/ida_star.cpp -include $< -include 15puzzle_apdb.cpp -o $@
+	$(CXX) $(OPT) ../global/ida_star.cpp -include $< -include hanoi_12_pdb.cpp -o $@
 	rm -f $*.c
-
 
 .PHONY: clean
 clean:
