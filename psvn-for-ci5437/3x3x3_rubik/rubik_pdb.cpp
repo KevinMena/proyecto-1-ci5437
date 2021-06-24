@@ -2,6 +2,6 @@
 
 Heuristic* load_heuristic()
 {
-    TopSpin12_4Heuristic* mh = new TopSpin12_4Heuristic;
+    MaxHeuristic* mh = new MaxHeuristic;
     return mh;
 }

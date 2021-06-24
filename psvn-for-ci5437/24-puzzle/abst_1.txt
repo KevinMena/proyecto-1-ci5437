@@ -4,7 +4,7 @@ map tile 2 2
 map tile 3 3
 map tile 4 4
 map tile 5 5
-map tile 6 6
+map tile 6 0
 map tile 7 0
 map tile 8 0
 map tile 9 0

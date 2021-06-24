@@ -58,21 +58,24 @@ private:
     state_map_t *map2;
     state_map_t *map3;
     state_map_t *map4;
+    state_map_t *map5;
     abstraction_t *abs1;
     abstraction_t *abs2;
     abstraction_t *abs3;
     abstraction_t *abs4;
+    abstraction_t *abs5;
     state_t abs_state1;
     state_t abs_state2;
     state_t abs_state3;
     state_t abs_state4;
+    state_t abs_state5;
 };
 
-class TopSpin12_4Heuristic : public Heuristic
+class MaxHeuristic : public Heuristic
 {
 public:
-    TopSpin12_4Heuristic() { };
-    ~TopSpin12_4Heuristic();
+    MaxHeuristic() { };
+    ~MaxHeuristic();
     
     int sum;
     void load_pdb();
@@ -88,26 +91,4 @@ private:
     state_t abs_state2;
     state_t abs_state3;
 };
-
-class TopSpin14_4Heuristic : public Heuristic
-{
-public:
-    TopSpin14_4Heuristic() { };
-    ~TopSpin14_4Heuristic();
-    
-    int sum;
-    void load_pdb();
-    int value(state_t state);
-private:
-    state_map_t *map1;
-    state_map_t *map2;
-    state_map_t *map3;
-    abstraction_t *abs1;
-    abstraction_t *abs2;
-    abstraction_t *abs3;
-    state_t abs_state1;
-    state_t abs_state2;
-    state_t abs_state3;
-};
-
 #endif
